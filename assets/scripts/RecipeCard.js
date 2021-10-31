@@ -141,7 +141,7 @@ class RecipeCard extends HTMLElement {
     if (rating) {
       let ratingCount = rating["ratingCount"];
       let ratingValue = rating["ratingValue"];
-      starCount.textContent = ratingCount;
+      starCount.textContent = ratingValue;
 
       let starImage = document.createElement("img");
       if (ratingValue == 0) {
