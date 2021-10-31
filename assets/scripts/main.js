@@ -53,7 +53,7 @@ async function fetchRecipes() {
           recipeData[recipes[i]] = resolve2;
         });
 
-      }, rejected => {
+      }).catch((error) => {
         reject(false);
       });
     }
