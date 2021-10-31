@@ -145,17 +145,17 @@ class RecipeCard extends HTMLElement {
 
       let starImage = document.createElement("img");
       if (ratingValue == 0) {
-        starImage.setAttribute("src", "/assets/images/icons/0-star.svg");
+        starImage.setAttribute("src", "assets/images/icons/0-star.svg");
       } else if (ratingValue <= 1) {
-        starImage.setAttribute("src", "/assets/images/icons/1-star.svg");
+        starImage.setAttribute("src", "assets/images/icons/1-star.svg");
       } else if (ratingValue <= 2) {
-        starImage.setAttribute("src", "/assets/images/icons/2-star.svg");
+        starImage.setAttribute("src", "assets/images/icons/2-star.svg");
       } else if (ratingValue <= 3) {
-        starImage.setAttribute("src", "/assets/images/icons/3-star.svg");
+        starImage.setAttribute("src", "assets/images/icons/3-star.svg");
       } else if (ratingValue <= 4) {
-        starImage.setAttribute("src", "/assets/images/icons/4-star.svg");
+        starImage.setAttribute("src", "assets/images/icons/4-star.svg");
       } else if (ratingValue <= 5) {
-        starImage.setAttribute("src", "/assets/images/icons/5-star.svg");
+        starImage.setAttribute("src", "assets/images/icons/5-star.svg");
       }
       starImage.setAttribute("alt", "5 stars");
       ratingDiv.appendChild(starImage);
