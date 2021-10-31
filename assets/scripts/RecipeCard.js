@@ -3,6 +3,8 @@ class RecipeCard extends HTMLElement {
     // Part 1 Expose - TODO
 
     // You'll want to attach the shadow DOM here
+    super();
+    var shadowRoot = this.attachShadow({mode: 'open'});
   }
 
   set data(data) {
@@ -98,9 +100,120 @@ class RecipeCard extends HTMLElement {
 
     // Make sure to attach your root element and styles to the shadow DOM you
     // created in the constructor()
+    this.shadowRoot.appendChild(styleElem);
+    this.shadowRoot.appendChild(card);
 
     // Part 1 Expose - TODO
+
+    //handle image
+    let image = document.createElement("img");
+    image.src = getImageUrl(data);
+    card.appendChild(image);
+
+    //title
+    let title = document.createElement("p");
+    title.classList.add("title");
+    card.appendChild(title);
+
+    //title link
+    let titleLink = document.createElement("a");
+    titleLink.href = getUrl(data);
+    titleLink.textContent = getTitle(data);
+    title.appendChild(titleLink);
+
+    //update image alt
+    image.alt = title.textContent;
+
+    //Organization
+    let organization = document.createElement("p");
+    organization.classList.add("organization");
+    organization.textContent = getOrganization(data);
+    card.appendChild(organization);
+
+    //Add ratings
+    let ratingDiv = document.createElement("div");
+    ratingDiv.classList.add("rating");
+    card.appendChild(ratingDiv);
+
+    let starCount = document.createElement("span");
+    let rating = getRating(data);
+    ratingDiv.appendChild(starCount);
+    if (rating) {
+      let ratingCount = rating["ratingCount"];
+      let ratingValue = rating["ratingValue"];
+      starCount.textContent = ratingCount;
+
+      let starImage = document.createElement("img");
+      if (ratingValue == 0) {
+        starImage.setAttribute("src", "/assets/images/icons/0-star.svg");
+      } else if (ratingValue <= 1) {
+        starImage.setAttribute("src", "/assets/images/icons/1-star.svg");
+      } else if (ratingValue <= 2) {
+        starImage.setAttribute("src", "/assets/images/icons/2-star.svg");
+      } else if (ratingValue <= 3) {
+        starImage.setAttribute("src", "/assets/images/icons/3-star.svg");
+      } else if (ratingValue <= 4) {
+        starImage.setAttribute("src", "/assets/images/icons/4-star.svg");
+      } else if (ratingValue <= 5) {
+        starImage.setAttribute("src", "/assets/images/icons/5-star.svg");
+      }
+      starImage.setAttribute("alt", "5 stars");
+      ratingDiv.appendChild(starImage);
+
+      let ratingCountElem = document.createElement("span");
+      ratingCountElem.textContent = "(" + ratingCount + ")";
+      ratingDiv.appendChild(ratingCountElem);
+    } else {
+      starCount.textContent = "No reviews";
+    }
+    
+    // handle time
+    let time = document.createElement("time");
+    time.textContent = convertTime(searchForKey(data, "totalTime"));
+    card.appendChild(time);
+
+    // handle ingredients
+    let ingredientsP = document.createElement("p");
+    ingredientsP.classList.add("ingredients");
+    let ingredients = createIngredientList(searchForKey(data, "recipeIngredient"));
+    ingredientsP.textContent = ingredients;
+    card.appendChild(ingredientsP);
   }
+}
+
+function getRating(data) {
+  return getSection(data, "Recipe")["aggregateRating"];
+}
+
+function getImageUrl(data) {
+  data = getSection(data, "Recipe");
+  let url = searchForKey(data, "thumbnail");
+  if (url == undefined) {
+    //url = searchForKey(data["@graph"][data["@graph"].length - 1], "image")[0];
+    url = searchForKey(data, "image")[0];
+  }
+  return url;
+}
+
+function getTitle(data) {
+  let recipe = getSection(data, "Recipe");
+  let title = searchForKey(recipe, "name");
+  return title;
+}
+
+function getSection(data, section) {
+  var value;
+  Object.keys(data).some(function(k) {
+    if (k === "@type" && data[k] == section) {
+      value = data;
+      return true;
+    }
+    if (data[k] && typeof data[k] === 'object') {
+      value = getSection(data[k], section);
+      return value !== undefined;
+    }
+  });
+  return value;
 }
 
 

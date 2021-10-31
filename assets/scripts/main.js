@@ -5,7 +5,10 @@
 const recipes = [
   'https://introweb.tech/assets/json/ghostCookies.json',
   'https://introweb.tech/assets/json/birthdayCake.json',
-  'https://introweb.tech/assets/json/chocolateChip.json'
+  'https://introweb.tech/assets/json/chocolateChip.json',
+  '/assets/recipes/pumpkinsoup.json',
+  '/assets/recipes/bakedmacandcheese.json',
+  '/assets/recipes/ovenbakedchicken.json',
 ];
 
 // Once all of the recipes that were specified above have been fetched, their
@@ -43,6 +46,27 @@ async function fetchRecipes() {
     // in the recipes folder and fetch them from there. You'll need to add their paths to the recipes array.
 
     // Part 1 Expose - TODO
+    for (let i = 0; i < recipes.length; i++) {
+      fetch(recipes[i]).then(resolve => {
+
+        resolve.json().then(resolve2 => {
+          recipeData[recipes[i]] = resolve2;
+        });
+
+      }, rejected => {
+        reject(false);
+      });
+    }
+
+    let resolver = setInterval(function() {
+      for (let i = 0; i < recipes.length; i++) {
+        if (recipeData[recipes[i]] == undefined) {
+          return;
+        }
+      }
+      resolve(true);
+      clearInterval(resolver);
+    });
   });
 }
 
@@ -54,6 +78,20 @@ function createRecipeCards() {
   // show any others you've added when the user clicks on the "Show more" button.
 
   // Part 1 Expose - TODO
+  let recipeCards = []
+  let main = document.querySelector("main");
+  let defaulted = document.querySelector("[cardCount=\"2\"]");
+  let offset = 0;
+  if (defaulted) {
+    offset = 3;
+  }
+  for (let i = offset; i < 3 + offset; i++) {
+    recipeCards.push(document.createElement("recipe-card"));
+    let recipeCard = recipeCards[i - offset];
+    recipeCard.data = recipeData[recipes[i]];
+    recipeCard.setAttribute("cardCount", i);
+    main.appendChild(recipeCard);
+  }
 }
 
 function bindShowMore() {
@@ -65,4 +103,22 @@ function bindShowMore() {
   // in the recipeData object where you stored them/
 
   // Part 2 Explore - TODO
+  let showMore = document.querySelector("button");
+  showMore.addEventListener("click", function() {
+    if (showMore.textContent == "Show more") {
+      showMore.textContent = "Show less";
+      createRecipeCards();
+    } else {
+      showMore.textContent = "Show more";
+      let cards = []
+      cards.push(document.querySelector("[cardCount=\"3\"]"));
+      cards.push(document.querySelector("[cardCount=\"4\"]"));
+      cards.push(document.querySelector("[cardCount=\"5\"]"));
+      let main = document.querySelector("main");
+      for (let i = 0; i < cards.length; i++) {
+        main.removeChild(cards[i]);
+      }
+      
+    }
+  });
 }
